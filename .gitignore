@@ -5,3 +5,11 @@ target
 **/part-*
 **/_SUCCESS
 **/.*.crc
+
+# IntelliJ IDEA #
+.idea
+*.iws
+*.iml
+*.ipr
+
+

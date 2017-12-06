@@ -1,13 +1,12 @@
 package HBaseIA.TwitBase;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTablePool;
-import org.joda.time.DateTime;
+import org.apache.hadoop.hbase.client.*;
 
 import utils.LoadUtils;
 import HBaseIA.TwitBase.hbase.TwitsDAO;
@@ -29,11 +28,11 @@ public class LoadTwits {
     return twit;
   }
 
-  private static DateTime randDT() {
+  private static LocalDateTime randDT() {
     int year = 2010 + LoadUtils.randInt(5);
     int month = 1 + LoadUtils.randInt(12);
     int day = 1 + LoadUtils.randInt(28);
-    return new DateTime(year, month, day, 0, 0, 0, 0);
+    return LocalDateTime.of(year, month, day, 0, 0, 0, 0);
   }
 
   public static void main(String[] args) throws IOException {
@@ -43,7 +42,10 @@ public class LoadTwits {
     }
 
     Configuration conf = HBaseConfiguration.create();
-    HBaseAdmin admin = new HBaseAdmin(conf);
+    conf.set("hbase.zookeeper.property.clientPort", "5181");
+
+    Connection connection = ConnectionFactory.createConnection(conf);
+    Admin admin = connection.getAdmin();
 
     if (!admin.tableExists(UsersDAO.TABLE_NAME) ||
         !admin.tableExists(TwitsDAO.TABLE_NAME)) {
@@ -52,9 +54,8 @@ public class LoadTwits {
       System.exit(0);
     }
 
-    HTablePool pool = new HTablePool(conf, Integer.MAX_VALUE);
-    UsersDAO users = new UsersDAO(pool);
-    TwitsDAO twits = new TwitsDAO(pool);
+    UsersDAO users = new UsersDAO(connection);
+    TwitsDAO twits = new TwitsDAO(connection);
 
     int count = Integer.parseInt(args[0]);
     List<String> words = LoadUtils.readResource(LoadUtils.WORDS_PATH);
@@ -65,7 +66,7 @@ public class LoadTwits {
       }
     }
 
-    pool.closeTablePool(UsersDAO.TABLE_NAME);
+    connection.close();
   }
 
 }

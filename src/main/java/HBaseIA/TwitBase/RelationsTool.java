@@ -3,6 +3,10 @@ package HBaseIA.TwitBase;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HTablePool;
 import org.apache.log4j.Logger;
 
@@ -19,8 +23,7 @@ public class RelationsTool {
     "  follows fromId toId - add a new relationship where from follows to.\n" +
     "  list follows userId - list everyone userId follows.\n" +
     "  list followedBy userId - list everyone who follows userId.\n" +
-    "  followedByScan userId - count users' followers using a client-side scanner" +
-    "  followedByCoproc userId - count users' followers using the Endpoint coprocessor";
+    "  followedByScan userId - count users' followers using a client-side scanner";
 
   public static void main(String[] args) throws Throwable {
     if (args.length == 0 || "help".equals(args[0])) {
@@ -28,12 +31,16 @@ public class RelationsTool {
       System.exit(0);
     }
 
-    HTablePool pool = new HTablePool();
-    RelationsDAO dao = new RelationsDAO(pool);
+    Configuration conf = HBaseConfiguration.create();
+    conf.set("hbase.zookeeper.property.clientPort", "5181");
+
+    Connection connection = ConnectionFactory.createConnection(conf);
+    RelationsDAO dao = new RelationsDAO(connection);
 
     if ("follows".equals(args[0])) {
       log.debug(String.format("Adding follower %s -> %s", args[1], args[2]));
       dao.addFollows(args[1], args[2]);
+      dao.addFollowedBy(args[2], args[1]);
       System.out.println("Successfully added relationship");
     }
 
@@ -56,12 +63,6 @@ public class RelationsTool {
       System.out.println(String.format("%s has %s followers.", args[1], count));
     }
 
-    if ("followedByCoproc".equals(args[0])) {
-      long count = dao.followedByCount(args[1]);
-      System.out.println(String.format("%s has %s followers.", args[1], count));
-    }
-
-    pool.closeTablePool(RelationsDAO.FOLLOWS_TABLE_NAME);
-    pool.closeTablePool(RelationsDAO.FOLLOWED_TABLE_NAME);
+    connection.close();
   }
 }

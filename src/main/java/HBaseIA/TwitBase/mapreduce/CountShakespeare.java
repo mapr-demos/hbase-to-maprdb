@@ -3,6 +3,8 @@ package HBaseIA.TwitBase.mapreduce;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
@@ -42,9 +44,9 @@ public class CountShakespeare {
           ImmutableBytesWritable rowkey,
           Result result,
           Context context) {
-      byte[] b = result.getColumnLatest(
-        TwitsDAO.TWITS_FAM,
-        TwitsDAO.TWIT_COL).getValue();
+
+      Cell cell = result.getColumnLatestCell(TwitsDAO.TWITS_FAM, TwitsDAO.TWIT_COL);
+      byte[] b = CellUtil.cloneValue(cell);
       if (b == null) return;
 
       String msg = Bytes.toString(b);
@@ -64,7 +66,7 @@ public class CountShakespeare {
     Scan scan = new Scan();
     scan.addColumn(TwitsDAO.TWITS_FAM, TwitsDAO.TWIT_COL);
     TableMapReduceUtil.initTableMapperJob(
-      Bytes.toString(TwitsDAO.TABLE_NAME),
+      Bytes.toString(TwitsDAO.TABLE_NAME_BYTES),
       scan,
       Map.class,
       ImmutableBytesWritable.class,

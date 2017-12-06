@@ -3,6 +3,10 @@ package HBaseIA.TwitBase;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HTablePool;
 import org.apache.log4j.Logger;
 
@@ -26,8 +30,11 @@ public class UsersTool {
       System.exit(0);
     }
 
-    HTablePool pool = new HTablePool();
-    UsersDAO dao = new UsersDAO(pool);
+    Configuration conf = HBaseConfiguration.create();
+    conf.set("hbase.zookeeper.property.clientPort", "5181");
+
+    Connection connection = ConnectionFactory.createConnection(conf);
+    UsersDAO dao = new UsersDAO(connection);
 
     if ("get".equals(args[0])) {
       log.debug(String.format("Getting user %s", args[1]));
@@ -50,6 +57,6 @@ public class UsersTool {
       }
     }
 
-    pool.closeTablePool(UsersDAO.TABLE_NAME);
+    connection.close();
   }
 }
