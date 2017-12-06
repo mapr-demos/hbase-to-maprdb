@@ -37,7 +37,7 @@ public class InitTables {
             }
 
             if (admin.tableExists(TwitsDAO.TABLE_NAME)) {
-                System.out.printf("Deleting %s\n", TwitsDAO.TABLE_NAME.getNameAsString()); // TODO
+                System.out.printf("Deleting %s\n", TwitsDAO.TABLE_NAME.getNameAsString());
                 if (admin.isTableEnabled(TwitsDAO.TABLE_NAME))
                     admin.disableTable(TwitsDAO.TABLE_NAME);
                 admin.deleteTable(TwitsDAO.TABLE_NAME);
