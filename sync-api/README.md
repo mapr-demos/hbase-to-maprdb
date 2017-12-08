@@ -34,7 +34,7 @@ usage information.
 
 TwitBase applications can also be run using java directly:
 
-    $ java -cp target/twitbase-1.0.0.jar <app> [options...]
+    $ java -cp `hbase classpath`:target/twitbase-1.0.0.jar <app> [options...]
 
 Utilities for interacting with TwitBase include:
 
