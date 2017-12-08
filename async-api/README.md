@@ -28,7 +28,7 @@ This client uses [asynchbase][3] for communication with HBase. The
 client assumes you have an existing TwitBase schema containing User
 data. Run the application with this command:
 
-    $ java -cp target/twitbase-async-1.0.0.jar \
+    $ java -cp `asynchbase classpath`:target/twitbase-async-1.0.0.jar \
       HBaseIA.TwitBase.AsyncUsersTool update
 
 ## License
