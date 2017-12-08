@@ -176,7 +176,12 @@ configuration file.
 ### Running AsyncHBase Application
 
 To run the application, use one of the following commands:
-`java -cp `asynchbase classpath`:$APP_CLASSPATH <ProgramName>`
+```
+$ java -cp `asynchbase classpath`:$APP_CLASSPATH <ProgramName>
+```
 
-`asynchbase $APP_CLASSPATH <ProgramName>`
+Or:
+```
+$ asynchbase $APP_CLASSPATH <ProgramName>
+```
 
