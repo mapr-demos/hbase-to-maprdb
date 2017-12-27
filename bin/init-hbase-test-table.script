@@ -1,0 +1,11 @@
+disable 'testtable'
+drop 'testtable'
+
+create 'testtable', 'cf'
+for i in '0'..'20' do
+put 'testtable', "user-#{i}", 'cf:user', "user-#{i}"
+put 'testtable', "user-#{i}", 'cf:email', "email-#{i}"
+put 'testtable', "user-#{i}", 'cf:name', "name-#{i}"
+put 'testtable', "user-#{i}", 'cf:password', "password-#{i}"
+end
+
