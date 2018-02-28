@@ -94,15 +94,20 @@ the `mapr-hbase` package that provides the same version number of HBase as your 
 
 ```
 $ hbase shell
+hbase shell
 HBase Shell; enter 'help<RETURN>' for list of supported commands.
 Type "exit<RETURN>" to leave the HBase Shell
+Version 1.1.8-mapr-1710, r2c52ca3f992cced95f36b11d7b04b86474ad9ed0, Sun Nov 12 23:05:53 UTC 2017
+
+Not all HBase shell commands are applicable to MapR tables.
+Consult MapR documentation for the list of supported commands.
 
 hbase(main):001:0> create '/testtable', 'cf'
 0 row(s) in 0.2040 seconds
 
 ```
 
-Note: here we use MapR HBase client `hbase` and not the one, installed in [Example](#example) section.
+Note: here we use MapR HBase `hbase` tool. (and not the one, installed in [Example](#example) section)
 
 2. Exit the HBase shell:
 
